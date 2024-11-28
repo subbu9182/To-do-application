@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		    <meta charset="UTF-8">
+		        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+			    <title>To-Do List</title>
+			        <link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		    <div class="container">
+			            <h1>To-Do List</h1>
+				            <input type="text" id="todo-input" placeholder="Enter a new To-Do">
+					            <button onclick="addTodo()">Add To-Do</button>
+						            <ul id="todo-list"></ul>
+							        </div>
+
+								    <script>
+									            // Fetch the existing To-Dos from the server
+									            async function fetchTodos() {
+											                const response = await fetch('/todos');
+											                const todos = await response.json();
+											                const todoList = document.getElementById('todo-list');
+											                todoList.innerHTML = '';
+											                todos.forEach(todo => {
+														                const li = document.createElement('li');
+														                li.textContent = todo;
+														                todoList.appendChild(li);
+														            });
+											            }
+
+										            // Add a new To-Do
+										            async function addTodo() {
+												                const todoInput = document.getElementById('todo-input');
+												                const todo = todoInput.value.trim();
+												                if (todo) {
+															                await fetch('/todos', {
+																		                    method: 'POST',
+																		                    headers: {
+																					                            'Content-Type': 'application/json'
+																					                        },
+																		                    body: JSON.stringify({ todo })
+																		                });
+															                todoInput.value = ''; // Clear input
+															                fetchTodos(); // Refresh the list
+															            }
+												            }
+
+										            // Initial fetch of todos when page loads
+										            window.onload = fetchTodos;
+										        </script>
+	</body>
+</html>
+
